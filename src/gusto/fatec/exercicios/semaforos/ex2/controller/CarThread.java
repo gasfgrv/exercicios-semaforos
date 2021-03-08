@@ -6,15 +6,15 @@ public class CarThread extends Thread {
 
 	private static int posChegada;
 	private static int posSaida;
-	private int idCar;
-	private Semaphore semaforo;
-	private static String[] sentidos = new String[] { "norte", "leste", "sul", "oeste" };
-	private String sentido;
+	private final int idCar;
+	private final Semaphore semaforo;
+	private static final String[] SENTIDOS = new String[] { "norte", "leste", "sul", "oeste" };
+	private final String sentido;
 
 	public CarThread(int idCar, Semaphore semaforo, int sentido) {
 		this.idCar = idCar;
 		this.semaforo = semaforo;
-		this.sentido = this.sentidos[sentido];
+		this.sentido = SENTIDOS[sentido];
 	}
 
 	@Override
@@ -27,6 +27,7 @@ public class CarThread extends Thread {
 			carroSaindo();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		} finally {
 			semaforo.release();
 		}
@@ -44,11 +45,12 @@ public class CarThread extends Thread {
 				Thread.sleep(tempo);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
 			System.out.println("Carro: #" + idCar + " andou " + distPecorrida + "m");
 		}
 
-		posChegada++;
+		setPosSaida();
 
 		System.out.println("Carro: #" + idCar + " foi o " + posChegada + "� a chegar");
 	}
@@ -62,13 +64,21 @@ public class CarThread extends Thread {
 			Thread.sleep(tempoParado);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 	}
 
 	private void carroSaindo() {
-		posSaida++;
+		setPosSaida();
 
 		System.out.println("Carro: #" + idCar + " passou pelo semaforo, indo no sentido, " + sentido);
 	}
 
+	public static void setPosChegada() {
+		CarThread.posChegada = posChegada +1;
+	}
+
+	public static void setPosSaida() {
+		CarThread.posSaida = posSaida + 1;
+	}
 }

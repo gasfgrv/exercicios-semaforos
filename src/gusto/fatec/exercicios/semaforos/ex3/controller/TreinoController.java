@@ -3,15 +3,14 @@ package gusto.fatec.exercicios.semaforos.ex3.controller;
 import java.util.concurrent.Semaphore;
 
 public class TreinoController extends Thread {
-	private Semaphore carrosNaPista;
-	private Semaphore carrosPorEquipe;
+	private final Semaphore carrosNaPista;
 
-	private int idEquipe;
+	private final int idEquipe;
 	private int melhorVolta = 0;
 
-	private int[] voltas = new int[3];
+	private final int[] voltas = new int[3];
 
-	public static int[][] grid = new int[14][3];
+	public final int[][] grid = new int[14][3];
 
 	private static int treinoConcluido = -1;
 
@@ -27,13 +26,14 @@ public class TreinoController extends Thread {
 			equipeAndando();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		} finally {
 			carrosNaPista.release();
 		}
 	}
 
 	private void equipeAndando() {
-		carrosPorEquipe = new Semaphore(1);
+		Semaphore carrosPorEquipe = new Semaphore(1);
 
 		for (int i = 0; i < 2; i++) {
 			try {
@@ -41,6 +41,7 @@ public class TreinoController extends Thread {
 				melhorVolta(i + 1);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			} finally {
 				carrosPorEquipe.release();
 			}
@@ -63,9 +64,10 @@ public class TreinoController extends Thread {
 						+ tempoVolta + " segundos.");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				Thread.currentThread().interrupt();
 			}
 		}
-		treinoConcluido++;
+		setTreinoConcluido();
 
 		grid[treinoConcluido][0] = idEquipe;
 		grid[treinoConcluido][1] = idCarro;
@@ -77,7 +79,7 @@ public class TreinoController extends Thread {
 	}
 
 	public void organizarGrid() {
-		int aux[] = new int[3];
+		int[] aux;
 
 		System.out.println();
 
@@ -96,4 +98,7 @@ public class TreinoController extends Thread {
 		}
 	}
 
+	public static void setTreinoConcluido() {
+		TreinoController.treinoConcluido = treinoConcluido + 1;
+	}
 }
