@@ -1,8 +1,8 @@
-package gusto.fatec.exercicios.semaforos.ex1.view;
-
-import java.util.concurrent.Semaphore;
+package gusto.fatec.exercicios.semaforos.ex1;
 
 import gusto.fatec.exercicios.semaforos.ex1.controller.PessoaThread;
+
+import java.util.concurrent.Semaphore;
 
 public class Main {
 
@@ -10,7 +10,8 @@ public class Main {
 		Semaphore semaforo = new Semaphore(1);
 
 		for (int pessoa = 0; pessoa < 4; pessoa++) {
-			Thread thread = new PessoaThread(pessoa + 1, semaforo);
+			Thread thread = new PessoaThread(semaforo);
+			thread.setName("Pessoa " + (pessoa + 1));
 			thread.start();
 		}
 

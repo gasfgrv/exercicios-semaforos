@@ -1,4 +1,4 @@
-package gusto.fatec.exercicios.semaforos.ex2.view;
+package gusto.fatec.exercicios.semaforos.ex2;
 
 import java.util.concurrent.Semaphore;
 

@@ -1,24 +1,28 @@
 package gusto.fatec.exercicios.semaforos.ex1.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Random;
 import java.util.concurrent.Semaphore;
 
 public class PessoaThread extends Thread {
 
-    private final int pessoa;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Thread.currentThread().getName());
+    private final Semaphore semaforo;
+    private final Random random;
     private static int chegadaPorta;
     private static int passagemPorta;
-    private final Semaphore semaforo;
 
-    public PessoaThread(int pessoa, Semaphore semaforo) {
-        this.pessoa = pessoa;
+    public PessoaThread(Semaphore semaforo) {
         this.semaforo = semaforo;
+        random = new Random();
     }
 
     @Override
     public void run() {
-        pessoaAndando();
-
         try {
+            pessoaAndando();
             semaforo.acquire();
             pessoaEsperando();
             pessoaSaindo();
@@ -31,42 +35,46 @@ public class PessoaThread extends Thread {
     }
 
     private void pessoaAndando() {
-        int corredor = 200;
         int distanciaPecorrida = 0;
-        int delocamento = (int) ((Math.random() * 3) + 4);
-        int tempo = 10;
+        int delocamento = random.nextInt(2 + 4) ;
 
-        while (distanciaPecorrida < corredor) {
+        while (distanciaPecorrida < 200) {
             distanciaPecorrida += delocamento;
-            try {
-                Thread.sleep(tempo);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-            }
-            System.out.println("Pessoa: #" + pessoa + " andou " + distanciaPecorrida + "m");
+
+            pararThread(10);
+
+            String logInfo = getName() + " andou " + distanciaPecorrida + "m";
+            LOGGER.info(logInfo);
         }
 
         setChegadaPorta();
     }
 
-    private void pessoaEsperando() {
-        System.out.println("Pessoa #" + pessoa + " chegou na porta.");
-
-        int abrindoPorta = ((int) (Math.random() * 2) + 1);
-
+    private void pararThread(long tempo) {
         try {
-            Thread.sleep(abrindoPorta);
+            Thread.sleep(tempo);
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
     }
 
+    private void pessoaEsperando() {
+        String logInfo = getName() + " chegou na porta.";
+        LOGGER.info(logInfo);
+
+        long tempo = random.nextInt(1) + 1L;
+
+        pararThread(tempo);
+    }
+
     private void pessoaSaindo() {
         setPassagemPorta();
 
-        System.out.println("Pessoa: #" + pessoa + " foi o " + passagemPorta + "� a sair.");
+        String logInfo = getName() + " foi o " + passagemPorta + "° a sair.";
+        LOGGER.info(logInfo);
+
+        Thread.currentThread().interrupt();
     }
 
     public static void setChegadaPorta() {

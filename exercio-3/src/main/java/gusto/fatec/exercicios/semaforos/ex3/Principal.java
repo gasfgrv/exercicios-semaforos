@@ -1,4 +1,4 @@
-package gusto.fatec.exercicios.semaforos.ex3.view;
+package gusto.fatec.exercicios.semaforos.ex3;
 
 import gusto.fatec.exercicios.semaforos.ex3.controller.TreinoController;
 
