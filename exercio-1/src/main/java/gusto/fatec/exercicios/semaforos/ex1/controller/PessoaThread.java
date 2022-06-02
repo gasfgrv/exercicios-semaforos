@@ -34,9 +34,9 @@ public class PessoaThread extends Thread {
         }
     }
 
-    private void pessoaAndando() {
+    private void pessoaAndando() throws InterruptedException {
         int distanciaPecorrida = 0;
-        int delocamento = random.nextInt(2 + 4) ;
+        int delocamento = random.nextInt(2 + 4);
 
         while (distanciaPecorrida < 200) {
             distanciaPecorrida += delocamento;
@@ -50,16 +50,11 @@ public class PessoaThread extends Thread {
         setChegadaPorta();
     }
 
-    private void pararThread(long tempo) {
-        try {
-            Thread.sleep(tempo);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
+    private void pararThread(long tempo) throws InterruptedException {
+        Thread.sleep(tempo);
     }
 
-    private void pessoaEsperando() {
+    private void pessoaEsperando() throws InterruptedException {
         String logInfo = getName() + " chegou na porta.";
         LOGGER.info(logInfo);
 

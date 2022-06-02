@@ -12,7 +12,8 @@ public class Main {
 		Semaphore semaforo = new Semaphore(permissoes);
 				
 		for (int idCar = 0; idCar < 4; idCar++) {
-			Thread tCar = new CarThread(idCar + 1, semaforo, idCar);
+			Thread tCar = new CarThread(semaforo, idCar);
+			tCar.setName("Carro " + (idCar + 1));
 			tCar.start();
 		}
 	}
